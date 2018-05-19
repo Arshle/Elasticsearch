@@ -6,6 +6,8 @@
  */
 package com.chezhibao.elasticsearch.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.chezhibao.elasticsearch.entity.CloudEnvironment;
 import org.elasticsearch.action.ActionFuture;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
@@ -25,14 +27,9 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import static org.elasticsearch.common.xcontent.XContentFactory.*;
 
 /**
@@ -120,15 +117,10 @@ public class Elasticsearch {
      * 增加文档
      * @return 文档ID
      */
-    public static String addDocument(){
+    public static String addDocument(String indexName, String type, CloudEnvironment environment){
         try {
-            IndexResponse response = client.prepareIndex("esstart","simple","1")
-                    .setSource(jsonBuilder().startObject()
-                    .field("type","syslog")
-                    .field("eventCount",1)
-                    .field("eventDate",new Date())
-                    .field("message","secilog insert doc test")
-                    .endObject()).get();
+            IndexResponse response = client.prepareIndex(indexName,type,"")
+                    .setSource(JSON.toJSONString(environment)).get();
             return response.getId();
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
