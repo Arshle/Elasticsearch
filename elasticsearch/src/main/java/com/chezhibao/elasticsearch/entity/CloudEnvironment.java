@@ -6,6 +6,9 @@
  */
 package com.chezhibao.elasticsearch.entity;
 
+import com.alibaba.fastjson.JSON;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 import java.util.Date;
 
 /**
@@ -16,9 +19,12 @@ import java.util.Date;
  * @see [相关类/方法]（可选）
  * @since [产品/模块版本]（可选）
  */
+@Document(indexName = "cloud",type = "cloud_environment",shards = 4,replicas = 2,refreshInterval = "0.5s")
 public class CloudEnvironment{
 
+    @Id
     private long id;
+
     private String branchName;
     private String domain;
     private String ingressIp;
@@ -80,5 +86,10 @@ public class CloudEnvironment{
 
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }
